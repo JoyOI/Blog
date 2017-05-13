@@ -69,6 +69,7 @@ namespace JoyOI.Blog.Controllers
         {
             var post = DB.Posts
                 .Include(x => x.Tags)
+                .Where(x => x.UserId == SiteOwner.Id)
                 .Where(x => x.Url == id)
                 .SingleOrDefault();
             if (post == null)
@@ -128,6 +129,7 @@ namespace JoyOI.Blog.Controllers
         {
             var post = DB.Posts
                 .Include(x => x.Tags)
+                .Where(x => x.UserId == SiteOwner.Id)
                 .Where(x => x.Url == id).SingleOrDefault();
             
             if (post == null)
@@ -180,7 +182,10 @@ namespace JoyOI.Blog.Controllers
         [AdminRequired]
         public IActionResult Catalog()
         {
-            return View(DB.Catalogs.OrderByDescending(x => x.PRI).ToList());
+            return View(DB.Catalogs
+                .Where(x => x.UserId == SiteOwner.Id)
+                .OrderByDescending(x => x.PRI)
+                .ToList());
         }
 
         [AdminRequired]
@@ -189,7 +194,10 @@ namespace JoyOI.Blog.Controllers
         [Route("Admin/Catalog/Delete")]
         public IActionResult CatalogDelete(string id)
         {
-            var catalog = DB.Catalogs.Where(x => x.Url == id).SingleOrDefault();
+            var catalog = DB.Catalogs
+                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.Url == id)
+                .SingleOrDefault();
             if (catalog == null)
                 return Prompt(x =>
                 {
@@ -210,7 +218,10 @@ namespace JoyOI.Blog.Controllers
         [Route("Admin/Catalog/Edit")]
         public IActionResult CatalogEdit(string id, string newId, string title, int pri)
         {
-            var catalog = DB.Catalogs.Where(x => x.Url == id).SingleOrDefault();
+            var catalog = DB.Catalogs
+                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.Url == id)
+                .SingleOrDefault();
             if (catalog == null)
                 return Prompt(x =>
                 {
