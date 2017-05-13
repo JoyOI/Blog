@@ -9,7 +9,7 @@
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.1.1",
     "Microsoft.Extensions.Logging.Console": "1.1.0",
-    "JoyOI.UserCenter.SDK": "1.0.0-alpha-10001",
+    "JoyOI.UserCenter.SDK": "1.0.0-alpha-10006",
     "Pomelo.EntityFrameworkCore.MySql": "1.1.2",
     "Pomelo.AspNetCore.Extensions": "1.1.0"
   },

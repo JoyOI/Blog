@@ -1,72 +1,129 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.Marked;
 using JoyOI.Blog.Filters;
 using JoyOI.Blog.Models;
+using JoyOI.UserCenter.SDK;
 
 namespace JoyOI.Blog.Controllers
 {
+    [Authorize]
     public class AdminController : BaseController
     {
-        [AdminRequired]
         [HttpGet]
-        [Route("Admin/Index")]
-        public IActionResult Index() 
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
 
-        [AdminRequired]
+            return View(SiteOwner);
+        }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Admin/Index")]
-        public IActionResult Index(Config config)
+        public async Task<IActionResult> Index(string site, string summary)
         {
-            Configuration["Account"] = config.Account;
-            Configuration["Password"] = config.Password;
-            Configuration["Site"] = config.Site;
-            Configuration["Description"] = config.Description;
-            Configuration["Disqus"] = config.Disqus;
-            Configuration["AvatarUrl"] = config.AvatarUrl;
-            Configuration["AboutUrl"] = config.AboutUrl;
-            Configuration["BlogRoll:GitHub"] = config.GitHub;
-            Configuration["BlogRoll:Follower"] = config.Follower.ToString();
-            Configuration["BlogRoll:Following"] = config.Following.ToString();
-            return RedirectToAction("Index", "Admin");
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
+
+            SiteOwner.SiteName = site;
+            SiteOwner.Summary = summary;
+            DB.SaveChanges();
+
+            return Prompt(x => 
+            {
+                x.Title = "Succeeded";
+                x.Details = SR["Saved successfully."];
+            });
         }
 
-        [GuestRequired]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
-        [GuestRequired]
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(string Username, string Password)
+        public async Task<IActionResult> Login(
+            string Username, 
+            string Password,
+            [FromServices] JoyOIUC UC)
         {
-            var tmp = Configuration["Account"];
-            if (Username == Configuration["Account"] && Password == Configuration["Password"])
+            var authorizeResult = await UC.TrustedAuthorizeAsync(Username, Password);
+            if (authorizeResult.succeeded)
             {
-                HttpContext.Session.SetString("Admin", "true");
-                return RedirectToAction("Index", "Admin");
+                var profileResult = await UC.GetUserProfileAsync(authorizeResult.data.open_id, authorizeResult.data.access_token);
+                var user = new User
+                {
+                    UserName = Username,
+                    Email = profileResult.data.email,
+                    PhoneNumber = profileResult.data.phone,
+                    SiteName = profileResult.data.nickname,
+                    Template = "Default",
+                    AccessToken = authorizeResult.data.access_token,
+                    ExpireTime = authorizeResult.data.expire_time,
+                    OpenId = authorizeResult.data.open_id,
+                    AvatarUrl = UC.GetAvatarUrl(authorizeResult.data.open_id)
+                };
+
+                await UserManager.CreateAsync(user, Password);
+
+                if (authorizeResult.data.is_root)
+                {
+                    await UserManager.AddToRoleAsync(user, "Root");
+                }
+
+                await SignInManager.SignInAsync(new User { UserName = Username }, false);
+
+                return RedirectToAction("Index");
             }
             else
             {
-                return View();
+                return Prompt(x =>
+                {
+                    x.Title = SR["Sign in failed"];
+                    x.Details = authorizeResult.msg;
+                    x.StatusCode = authorizeResult.code;
+                });
             }
         }
-
-        [AdminRequired]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Admin/Post/Edit")]
-        public IActionResult PostEdit(string id, string newId, string tags, bool isPage, string title, Guid? catalog, string content)
+        public async Task<IActionResult> PostEdit(string id, string newId, string tags, bool isPage, string title, Guid? catalog, string content)
         {
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
+
             var post = DB.Posts
                 .Include(x => x.Tags)
                 .Where(x => x.UserId == SiteOwner.Id)
@@ -120,13 +177,22 @@ namespace JoyOI.Blog.Controllers
             DB.SaveChanges();
             return Content(Instance.Parse(content));
         }
-
-        [AdminRequired]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Admin/Post/Delete")]
-        public IActionResult PostDelete(string id)
+        public async Task<IActionResult> PostDelete(string id)
         {
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
+
             var post = DB.Posts
                 .Include(x => x.Tags)
                 .Where(x => x.UserId == SiteOwner.Id)
@@ -147,13 +213,22 @@ namespace JoyOI.Blog.Controllers
             DB.SaveChanges();
             return RedirectToAction("Index", "Home");
         }
-
-        [AdminRequired]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Admin/Post/New")]
-        public IActionResult PostNew()
+        public async Task<IActionResult> PostNew()
         {
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
+
             var post = new Post
             {
                 Id = Guid.NewGuid(),
@@ -169,8 +244,7 @@ namespace JoyOI.Blog.Controllers
             DB.SaveChanges();
             return RedirectToAction("Post", "Post", new { id = post.Url });
         }
-
-        [AdminRequired]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Logout()
@@ -178,22 +252,40 @@ namespace JoyOI.Blog.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
-
-        [AdminRequired]
-        public IActionResult Catalog()
+        
+        public async Task<IActionResult> Catalog()
         {
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
+
             return View(DB.Catalogs
                 .Where(x => x.UserId == SiteOwner.Id)
                 .OrderByDescending(x => x.PRI)
                 .ToList());
         }
-
-        [AdminRequired]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Admin/Catalog/Delete")]
-        public IActionResult CatalogDelete(string id)
+        public async Task<IActionResult> CatalogDelete(string id)
         {
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
+
             var catalog = DB.Catalogs
                 .Where(x => x.UserId == SiteOwner.Id)
                 .Where(x => x.Url == id)
@@ -211,13 +303,22 @@ namespace JoyOI.Blog.Controllers
             DB.SaveChanges();
             return Content("true");
         }
-
-        [AdminRequired]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Admin/Catalog/Edit")]
-        public IActionResult CatalogEdit(string id, string newId, string title, int pri)
+        public async Task<IActionResult> CatalogEdit(string id, string newId, string title, int pri)
         {
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
+
             var catalog = DB.Catalogs
                 .Where(x => x.UserId == SiteOwner.Id)
                 .Where(x => x.Url == id)
@@ -237,13 +338,22 @@ namespace JoyOI.Blog.Controllers
             DB.SaveChanges();
             return Content("true");
         }
-
-        [AdminRequired]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Admin/Catalog/New")]
-        public IActionResult CatalogNew()
+        public async Task<IActionResult> CatalogNew()
         {
+            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Access Denied"];
+                    x.Details = SR["You don't have the permission to access this page."];
+                    x.StatusCode = 403;
+                });
+            }
+
             var catalog = new Catalog
             {
                 Url = Guid.NewGuid().ToString().Substring(0, 8),

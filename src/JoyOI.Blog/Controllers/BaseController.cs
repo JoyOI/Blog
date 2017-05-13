@@ -6,7 +6,7 @@ using JoyOI.Blog.Models;
 
 namespace JoyOI.Blog.Controllers
 {
-    public class BaseController : BaseController<BlogContext>
+    public class BaseController : BaseController<BlogContext, User, Guid>
     {
         public User SiteOwner { get; private set; }
 

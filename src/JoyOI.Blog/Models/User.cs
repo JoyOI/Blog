@@ -20,9 +20,14 @@ namespace JoyOI.Blog.Models
         [MaxLength(32)]
         public string Template { get; set; }
 
-        [ForeignKey("Avatar")]
-        public Guid AvatarId { get; set; }
+        [MaxLength(64)]
+        public string AccessToken { get; set; }
 
-        public virtual Blob Avatar { get; set; }
+        public DateTime ExpireTime { get; set; }
+
+        public Guid OpenId { get; set; }
+
+        [MaxLength(256)]
+        public string AvatarUrl { get; set; }
     }
 }
