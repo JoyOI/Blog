@@ -30,7 +30,7 @@ namespace JoyOI.Blog.Controllers
             ViewBag.Description = SiteOwner.Summary;
             ViewBag.Title = SiteOwner.SiteName;
             ViewBag.AboutUrl = "/about";
-            ViewBag.AvatarUrl = "/download/" + SiteOwner.AvatarId;
+            ViewBag.AvatarUrl = SiteOwner.AvatarUrl;
             ViewBag.Account = SiteOwner.Nickname;
             ViewBag.DefaultTemplate = SiteOwner.Template;
 
