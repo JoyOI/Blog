@@ -13,5 +13,7 @@ namespace JoyOI.Blog.Models
 
         [MaxLength(128)]
         public string Domain { get; set; }
+
+        public bool IsDeletable { get; set; }
     }
 }

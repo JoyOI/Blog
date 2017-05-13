@@ -36,6 +36,7 @@ namespace JoyOI.Blog.Controllers
 
             // Building Tags
             ViewBag.Tags = DB.PostTags
+                .Where(x => x.Post.UserId == SiteOwner.Id)
                 .OrderBy(x => x.Tag)
                 .GroupBy(x => x.Tag)
                 .Select(x => new TagViewModel
@@ -47,6 +48,7 @@ namespace JoyOI.Blog.Controllers
 
             // Building Calendar
             ViewBag.Calendars = DB.Posts
+                .Where(x => x.UserId == SiteOwner.Id)
                 .Where(x => !x.IsPage)
                 .OrderByDescending(x => x.Time)
                 .GroupBy(x => new { Year = x.Time.Year, Month = x.Time.Month })
@@ -61,6 +63,7 @@ namespace JoyOI.Blog.Controllers
             // Building Catalogs
             ViewBag.Catalogs = DB.Catalogs
                 .Include(x => x.Posts)
+                .Where(x => x.UserId == SiteOwner.Id)
                 .OrderByDescending(x => x.PRI)
                 .ToList()
                 .Select(x => new CatalogViewModel
@@ -72,20 +75,6 @@ namespace JoyOI.Blog.Controllers
                     Url = x.Url
                 })
                 .ToList();
-
-            // Building Blog Rolls
-            var rolls = DB.BlogRolls
-                .Where(x => !string.IsNullOrEmpty(x.URL) && x.AvatarId.HasValue)
-                .OrderByDescending(x => x.Type)
-                .Select(x => new BlogRollViewModel
-                {
-                    AvatarId = x.AvatarId.Value,
-                    Name = x.NickName,
-                    URL = x.URL
-                })
-                .ToList();
-            rolls.Reverse();
-            ViewBag.Rolls = rolls;
         }
     }
 }

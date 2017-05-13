@@ -237,7 +237,8 @@ namespace JoyOI.Blog.Controllers
                 Summary = "",
                 CatalogId = null,
                 IsPage = false,
-                Time = DateTime.Now
+                Time = DateTime.Now,
+                UserId = SiteOwner.Id
             };
             DB.Posts.Add(post);
             DB.SaveChanges();
@@ -357,7 +358,8 @@ namespace JoyOI.Blog.Controllers
             {
                 Url = Guid.NewGuid().ToString().Substring(0, 8),
                 PRI = 0,
-                Title = SR["New Catalog"]
+                Title = SR["New Catalog"],
+                UserId = SiteOwner.Id
             };
             DB.Catalogs.Add(catalog);
             DB.SaveChanges();
