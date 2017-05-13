@@ -35,7 +35,7 @@ namespace JoyOI.Blog.Models
 
             builder.Entity<DomainBinding>(e => 
             {
-                e.HasIndex(x => x.Domain);
+                e.HasKey(x => new { x.Domain, x.UserId });
             });
 
             builder.Entity<Post>(e =>
