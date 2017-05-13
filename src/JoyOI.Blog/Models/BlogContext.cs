@@ -22,8 +22,6 @@ namespace JoyOI.Blog.Models
 
         public DbSet<Blob> Blobs { get; set; }
 
-        public DbSet<BlogRoll> BlogRolls { get; set; }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -33,6 +31,11 @@ namespace JoyOI.Blog.Models
             builder.Entity<Catalog>(e =>
             {
                 e.HasIndex(x => x.PRI);
+            });
+
+            builder.Entity<DomainBinding>(e => 
+            {
+                e.HasIndex(x => x.Domain);
             });
 
             builder.Entity<Post>(e =>
@@ -45,11 +48,6 @@ namespace JoyOI.Blog.Models
             builder.Entity<PostTag>(e =>
             {
                 e.HasIndex(x => x.Tag);
-            });
-
-            builder.Entity<BlogRoll>(e =>
-            {
-                e.HasIndex(x => x.GitHubId);
             });
         }
     }

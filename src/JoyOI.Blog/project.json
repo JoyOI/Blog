@@ -41,8 +41,11 @@
 
     "publishOptions": {
         "include": [
+            "Localization",
             "wwwroot",
-            "web.config"
+            "web.config",
+            "Views",
+            "config.json"
         ]
     },
 

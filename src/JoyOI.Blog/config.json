@@ -1,0 +1,5 @@
+﻿{
+    "Data": {
+        "MySQL": "server=localhost;database=joyoi_blog;uid=root;pwd=123456"
+    }
+}
