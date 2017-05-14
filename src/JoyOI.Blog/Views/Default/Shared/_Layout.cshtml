@@ -13,7 +13,7 @@
         var CONFIG = {"Prefix":"","URI":"\/"};
     </script>
 </head>
-<body class="body-@ViewBag.Position">
+<body class="body">
     <div id="container">
         <div class="page-header">
             <div class="page-header-bar">
@@ -60,15 +60,9 @@
                 <div class="grid_12">
                     <div class="copyright">
                         <p>
-                            Copyright © 2016 <a href="http://www.1234.sh" target="_self">Amamiya Yuuko</a>, all rights reserved. 黑ICP备15005987号.
+                            Copyright © @DateTime.Now.Year <a href="https://github.com/joyoi/blog" target="_self">Beijing Tsba Education &amp; Technologies Co., Ltd.</a> all rights reserved.
                         </p>
-                        <p>Powered by <a href="https://github.com/PomeloFoundation/YuukoBlog" target="_blank" yuuko-static>YuukoBlog</a>, Template: 
-                            <select id="lstTemplate">
-                                @foreach (var t in Template.Collection.Templates)
-                                {
-                                    <!option @(Template.Current.Identifier == t.Identifier ? "selected" : "") value="@t.Identifier">@t.Title</!option>
-                                }
-                            </select>
+                        <p>Powered by <a href="https://github.com/joyoi/blog" target="_blank" yuuko-static>JoyOI Blog</a>
                         @if (!Html.IsAdmin())
                         {
                             <a href="/admin/login" target="_self">Manage</a>
@@ -76,7 +70,7 @@
                         </p>
                     </div>
                     <div class="azure">
-                        <a target="_blank" href="http://www.azure.com/"><img src="~/assets/Default/images/azure.png" class="azure-logo" alt="Hosted on Microsoft Azure" /></a>
+                        <a target="_blank" href="http://www.joyoi.net/"><img src="~/assets/Default/images/joyoi.png" class="azure-logo" alt="Hosted on Joyoi" /></a>
                     </div>
                 </div><div class="clear"></div>
             </div>

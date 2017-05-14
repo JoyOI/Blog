@@ -725,7 +725,7 @@
                     // update cover
 
                     // cover background
-                    $('body').attr('class', 'body-' + $dom.find('#raw_info .role-body-class').text());
+                    $('body').attr('class', 'body');
                     $('.page-header-li').removeClass('page-header-li-active');
                     $('.page-header-li-' + $dom.find('#raw_info .role-category').text()).addClass('page-header-li-active');
 
@@ -752,7 +752,7 @@
                     setTimeout(function () {
 
                         // cover background
-                        $('body').attr('class', 'body-' + $dom.find('#raw_info .role-body-class').text());
+                        $('body').attr('class', 'body');
                         $('.page-header-li').removeClass('page-header-li-active');
                         $('.page-header-li-' + $dom.find('#raw_info .role-category').text()).addClass('page-header-li-active');
 

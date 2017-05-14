@@ -270,9 +270,9 @@ namespace JoyOI.Blog.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            await SignInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
         
