@@ -29,7 +29,7 @@ namespace JoyOI.Blog.Controllers
             return View(post);
         }
 
-        [Route("{id}")]
+        [Route("{id:regex(^([[a-zA-Z0-9_-]]{{1,64}})$)}")]
         public IActionResult Page(string id)
         {
             var post = DB.Posts

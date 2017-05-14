@@ -15,6 +15,7 @@ namespace JoyOI.Blog.Controllers
     public class AdminController : BaseController
     {
         [HttpGet]
+        [Route("/Admin/Index")]
         public async Task<IActionResult> Index()
         {
             if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
@@ -32,6 +33,7 @@ namespace JoyOI.Blog.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("/Admin/Index")]
         public async Task<IActionResult> Index(string site, string summary)
         {
             if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
@@ -56,6 +58,7 @@ namespace JoyOI.Blog.Controllers
         }
 
         [AllowAnonymous]
+        [Route("/Admin/Login")]
         public IActionResult Login()
         {
             return View();
@@ -64,6 +67,7 @@ namespace JoyOI.Blog.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("/Admin/Login")]
         public async Task<IActionResult> Login(
             string Username, 
             string Password,
@@ -73,27 +77,46 @@ namespace JoyOI.Blog.Controllers
             if (authorizeResult.succeeded)
             {
                 var profileResult = await UC.GetUserProfileAsync(authorizeResult.data.open_id, authorizeResult.data.access_token);
-                var user = new User
-                {
-                    UserName = Username,
-                    Email = profileResult.data.email,
-                    PhoneNumber = profileResult.data.phone,
-                    SiteName = profileResult.data.nickname,
-                    Template = "Default",
-                    AccessToken = authorizeResult.data.access_token,
-                    ExpireTime = authorizeResult.data.expire_time,
-                    OpenId = authorizeResult.data.open_id,
-                    AvatarUrl = UC.GetAvatarUrl(authorizeResult.data.open_id)
-                };
 
-                await UserManager.CreateAsync(user, Password);
+                User user = await UserManager.FindByNameAsync(Username);
+
+                if (user == null)
+                {
+                    user = new User
+                    {
+                        Id = authorizeResult.data.open_id,
+                        UserName = Username,
+                        Email = profileResult.data.email,
+                        PhoneNumber = profileResult.data.phone,
+                        SiteName = profileResult.data.nickname,
+                        Template = "Default",
+                        AccessToken = authorizeResult.data.access_token,
+                        ExpireTime = authorizeResult.data.expire_time,
+                        OpenId = authorizeResult.data.open_id,
+                        AvatarUrl = UC.GetAvatarUrl(authorizeResult.data.open_id)
+                    };
+
+                    await UserManager.CreateAsync(user, Password);
+                }
 
                 if (authorizeResult.data.is_root)
                 {
                     await UserManager.AddToRoleAsync(user, "Root");
                 }
 
-                await SignInManager.SignInAsync(new User { UserName = Username }, false);
+                var username = (await UC.GetUsernameAsync(authorizeResult.data.open_id, authorizeResult.data.access_token)).data;
+                var domain = string.Format(Configuration["Host:DomainTemplate"], username);
+                if (!DB.DomainBindings.Any(x => x.Domain == domain))
+                {
+                    DB.DomainBindings.Add(new DomainBinding
+                    {
+                        Domain = domain,
+                        UserId = authorizeResult.data.open_id
+                    });
+                    DB.SaveChanges();
+                }
+
+                await SignInManager.SignInAsync(user, true);
 
                 return RedirectToAction("Index");
             }

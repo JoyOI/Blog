@@ -17,10 +17,7 @@ namespace JoyOI.Blog.Extensions
 
         public bool IsAbleToUpload()
         {
-            var val = services.GetRequiredService<IHttpContextAccessor>().HttpContext.Session.GetString("Admin");
-            if (val == "true")
-                return true;
-            return false;
+            return true;
         }
     }
 }

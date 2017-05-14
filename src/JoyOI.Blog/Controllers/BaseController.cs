@@ -15,10 +15,11 @@ namespace JoyOI.Blog.Controllers
             base.Prepare();
 
             SiteOwner = DB.DomainBindings
+                .Include(x => x.User)
                 .SingleOrDefault(x => x.Domain == HttpContext.Request.Host.Host)
                 ?.User;
 
-            if (SiteOwner == null)
+            if (SiteOwner == null && !Request.Path.Value.ToLower().StartsWith("/admin"))
             {
                 HttpContext.Response.Redirect("http://www.joyoi.net");
                 return;
@@ -27,16 +28,19 @@ namespace JoyOI.Blog.Controllers
             // Building Constants
             ViewBag.Position = "home";
             ViewBag.IsPost = false;
-            ViewBag.Description = SiteOwner.Summary;
-            ViewBag.Title = SiteOwner.SiteName;
+            ViewBag.Description = SiteOwner?.Summary;
+            ViewBag.Title = SiteOwner?.SiteName;
             ViewBag.AboutUrl = "/about";
-            ViewBag.AvatarUrl = SiteOwner.AvatarUrl;
-            ViewBag.Account = SiteOwner.Nickname;
-            ViewBag.DefaultTemplate = SiteOwner.Template;
+            ViewBag.AvatarUrl = SiteOwner?.AvatarUrl;
+            ViewBag.Account = SiteOwner?.Nickname;
+            ViewBag.DefaultTemplate = SiteOwner?.Template;
+
+            var siteOwnerId = SiteOwner?.Id;
+            ViewBag.OwnerId = SiteOwner == null ? null : (Guid?)SiteOwner.Id;
 
             // Building Tags
             ViewBag.Tags = DB.PostTags
-                .Where(x => x.Post.UserId == SiteOwner.Id)
+                .Where(x => x.Post.UserId == siteOwnerId)
                 .OrderBy(x => x.Tag)
                 .GroupBy(x => x.Tag)
                 .Select(x => new TagViewModel
@@ -48,7 +52,7 @@ namespace JoyOI.Blog.Controllers
 
             // Building Calendar
             ViewBag.Calendars = DB.Posts
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == siteOwnerId)
                 .Where(x => !x.IsPage)
                 .OrderByDescending(x => x.Time)
                 .GroupBy(x => new { Year = x.Time.Year, Month = x.Time.Month })
@@ -63,7 +67,7 @@ namespace JoyOI.Blog.Controllers
             // Building Catalogs
             ViewBag.Catalogs = DB.Catalogs
                 .Include(x => x.Posts)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == siteOwnerId)
                 .OrderByDescending(x => x.PRI)
                 .ToList()
                 .Select(x => new CatalogViewModel

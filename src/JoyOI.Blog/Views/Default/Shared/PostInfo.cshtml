@@ -1,4 +1,4 @@
-﻿@if (Model != null && Model.GetType() == typeof(Post) && (Context.Session.GetString("Admin") == "true" || !Model.IsPage))
+﻿@if (Model != null && Model.GetType() == typeof(Post) && (Html.IsAdmin() || !Model.IsPage))
 {
     <div class="sidebar-module sidebar-postinfo">
         <h3>THIS POST</h3>

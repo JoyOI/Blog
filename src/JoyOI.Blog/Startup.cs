@@ -54,6 +54,11 @@ namespace JoyOI.Blog
             services.AddMvc()
                 .AddMultiTemplateEngine()
                 .AddCookieTemplateProvider();
+
+            services.AddSmartCookies();
+            services.AddSmartUser<User, Guid>();
+
+            services.AddJoyOIUserCenter();
         }
         
         public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
