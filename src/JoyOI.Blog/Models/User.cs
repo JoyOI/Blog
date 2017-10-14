@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Pomelo.AspNetCore.Extensions.BlobStorage.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace JoyOI.Blog.Models
 {

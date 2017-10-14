@@ -2,7 +2,7 @@
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,7 +29,7 @@ namespace JoyOI.Blog
 
             services.AddMemoryCache();
 
-            services.AddIdentity<User, IdentityRole<Guid>>(x =>
+            services.AddIdentity<User, Role>(x =>
             {
                 x.Password.RequireDigit = false;
                 x.Password.RequiredLength = 0;
@@ -38,7 +38,7 @@ namespace JoyOI.Blog
                 x.Password.RequireUppercase = false;
                 x.User.AllowedUserNameCharacters = null;
             })
-                .AddEntityFrameworkStores<BlogContext, Guid>()
+                .AddEntityFrameworkStores<BlogContext>()
                 .AddDefaultTokenProviders();
 
             services.AddBlobStorage()

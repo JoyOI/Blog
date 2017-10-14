@@ -11,9 +11,9 @@ namespace JoyOI.Blog.Models
         public static async Task InitializeYuukoBlog(IServiceProvider serviceProvider)
         {
             var db = serviceProvider.GetService<BlogContext>();
-            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole<Guid>>>();
+            var roleManager = serviceProvider.GetService<RoleManager<Role>>();
             await db.Database.EnsureCreatedAsync();
-            await roleManager.CreateAsync(new IdentityRole<Guid>("Root"));
+            await roleManager.CreateAsync(new Role("Root"));
         }
     }
 }

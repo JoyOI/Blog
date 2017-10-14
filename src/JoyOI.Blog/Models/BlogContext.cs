@@ -5,7 +5,7 @@ using Pomelo.AspNetCore.Extensions.BlobStorage.Models;
 
 namespace JoyOI.Blog.Models
 {
-    public class BlogContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IBlobStorageDbContext
+    public class BlogContext : IdentityDbContext<User, Role, Guid>, IBlobStorageDbContext
     {
         public BlogContext(DbContextOptions<BlogContext> opt)
             : base(opt)
