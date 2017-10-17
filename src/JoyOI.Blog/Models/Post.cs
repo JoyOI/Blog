@@ -29,6 +29,10 @@ namespace JoyOI.Blog.Models
 
         public bool IsPage { get; set; }
 
+        public string ProblemId { get; set; }
+
+        public string ProblemTitle { get; set; }
+
         [ForeignKey("Catalog")]
         public Guid? CatalogId { get; set; }
 
@@ -47,7 +51,9 @@ namespace JoyOI.Blog.Models
                 Tags = Tags.ToList(),
                 Time = Time,
                 Title = Title,
-                Url = Url
+                Url = Url,
+                ProblemId = ProblemId,
+                ProblemTitle = ProblemTitle
             };
         }
     }

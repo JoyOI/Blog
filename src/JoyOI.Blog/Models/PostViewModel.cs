@@ -7,6 +7,8 @@ namespace JoyOI.Blog.Models
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
+        public string ProblemId { get; set; }
+        public string ProblemTitle { get; set; }
         public DateTime Time { get; set; }
         public string Summary { get; set; }
         public List<PostTag> Tags { get; set; }
