@@ -5,9 +5,10 @@
     "JoyOI": {
         "AppId": "b453aa01-680e-49ca-a332-9d3ae296af9f",
         "Secret": "0",
-        "UcUrl": "http://api.uc.joyoi.com"
+      "UcUrl": "http://api.uc.joyoi.net",
+      "OnlineJudgeUrl": "http://api.oj.joyoi.net"
     },
     "Host": {
-        "DomainTemplate": "{0}.joyoi.com"
+        "DomainTemplate": "{0}.blog.joyoi.net"
     }
 }

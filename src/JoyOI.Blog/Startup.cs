@@ -59,6 +59,7 @@ namespace JoyOI.Blog
             services.AddSmartUser<User, Guid>();
 
             services.AddJoyOIUserCenter();
+            services.AddExternalApi();
         }
         
         public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -66,7 +67,7 @@ namespace JoyOI.Blog
             loggerFactory.AddConsole(LogLevel.Warning, true);
 
             app.UseStaticFiles();
-            app.UseIdentity();
+            app.UseAuthentication();
             app.UseBlobStorage("/assets/shared/scripts/jquery.codecomb.fileupload.js");
             app.UseDeveloperExceptionPage();
             app.UseMvcWithDefaultRoute();
