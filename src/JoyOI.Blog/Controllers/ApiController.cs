@@ -10,6 +10,7 @@ namespace JoyOI.Blog.Controllers
 {
     public class ApiController : BaseController
     {
+        [Route("Api/Resolution/{id}")]
         public async Task<IActionResult> Resolution(string id, int? page, CancellationToken token)
         {
             if (string.IsNullOrEmpty(id))

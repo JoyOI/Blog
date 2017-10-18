@@ -2,9 +2,12 @@
     <h3>CATALOGS</h3>
     <div class="sidebar-body">
         <ul class="sidebar-list">
-            @foreach (CatalogViewModel x in ViewBag.Catalogs)
+            @if (ViewBag.Catalogs != null)
             {
+                @foreach (CatalogViewModel x in ViewBag.Catalogs)
+                {
                 <li class="sidebar-item"><a href="/catalog/@x.Url.ToLower()">@x.Url.ToUpper() (@x.Count)</a></li>
+                }
             }
         </ul>
     </div>

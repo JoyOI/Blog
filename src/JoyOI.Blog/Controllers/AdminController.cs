@@ -18,7 +18,7 @@ namespace JoyOI.Blog.Controllers
         [Route("/Admin/Index")]
         public async Task<IActionResult> Index()
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {
@@ -36,7 +36,7 @@ namespace JoyOI.Blog.Controllers
         [Route("/Admin/Index")]
         public async Task<IActionResult> Index(string site, string summary)
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {
@@ -136,7 +136,7 @@ namespace JoyOI.Blog.Controllers
         [Route("Admin/Post/Edit")]
         public async Task<IActionResult> PostEdit(string id, string newId, string tags, bool isPage, string title, Guid? catalog, string content)
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {
@@ -148,7 +148,7 @@ namespace JoyOI.Blog.Controllers
 
             var post = DB.Posts
                 .Include(x => x.Tags)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => x.Url == id)
                 .SingleOrDefault();
             if (post == null)
@@ -205,7 +205,7 @@ namespace JoyOI.Blog.Controllers
         [Route("Admin/Post/Delete")]
         public async Task<IActionResult> PostDelete(string id)
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {
@@ -217,7 +217,7 @@ namespace JoyOI.Blog.Controllers
 
             var post = DB.Posts
                 .Include(x => x.Tags)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => x.Url == id).SingleOrDefault();
             
             if (post == null)
@@ -241,7 +241,7 @@ namespace JoyOI.Blog.Controllers
         [Route("Admin/Post/New")]
         public async Task<IActionResult> PostNew()
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {
@@ -278,7 +278,7 @@ namespace JoyOI.Blog.Controllers
         
         public async Task<IActionResult> Catalog()
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {
@@ -289,7 +289,7 @@ namespace JoyOI.Blog.Controllers
             }
 
             return View(DB.Catalogs
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .OrderByDescending(x => x.PRI)
                 .ToList());
         }
@@ -299,7 +299,7 @@ namespace JoyOI.Blog.Controllers
         [Route("Admin/Catalog/Delete")]
         public async Task<IActionResult> CatalogDelete(string id)
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {
@@ -310,7 +310,7 @@ namespace JoyOI.Blog.Controllers
             }
 
             var catalog = DB.Catalogs
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => x.Url == id)
                 .SingleOrDefault();
             if (catalog == null)
@@ -332,7 +332,7 @@ namespace JoyOI.Blog.Controllers
         [Route("Admin/Catalog/Edit")]
         public async Task<IActionResult> CatalogEdit(string id, string newId, string title, int pri)
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {
@@ -343,7 +343,7 @@ namespace JoyOI.Blog.Controllers
             }
 
             var catalog = DB.Catalogs
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => x.Url == id)
                 .SingleOrDefault();
             if (catalog == null)
@@ -367,7 +367,7 @@ namespace JoyOI.Blog.Controllers
         [Route("Admin/Catalog/New")]
         public async Task<IActionResult> CatalogNew()
         {
-            if (SiteOwner.Id != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
+            if (SiteOwnerId != User.Current.Id && (await UserManager.GetRolesAsync(User.Current)).Any(x => x == "Root"))
             {
                 return Prompt(x =>
                 {

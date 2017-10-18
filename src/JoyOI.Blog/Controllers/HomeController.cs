@@ -14,7 +14,7 @@ namespace JoyOI.Blog.Controllers
             return PagedView<PostViewModel, Post>(DB.Posts
                 .Include(x => x.Catalog)
                 .Include(x => x.Tags)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => !x.IsPage)
                 .OrderByDescending(x => x.Time), 5, "Home");
         }
@@ -27,7 +27,7 @@ namespace JoyOI.Blog.Controllers
             return PagedView<PostViewModel, Post>(DB.Posts
                 .Include(x => x.Tags)
                 .Include(x => x.Catalog)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => !x.IsPage)
                 .Where(x => x.Time >= begin && x.Time <= end)
                 .OrderByDescending(x => x.Time), 5, "Home");
@@ -37,7 +37,7 @@ namespace JoyOI.Blog.Controllers
         public IActionResult Catalog(string id, int p = 1)
         {
             var catalog = DB.Catalogs
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => x.Url == id)
                 .SingleOrDefault();
             if (catalog == null)
@@ -53,7 +53,7 @@ namespace JoyOI.Blog.Controllers
             return PagedView<PostViewModel, Post>(DB.Posts
                 .Include(x => x.Tags)
                 .Include(x => x.Catalog)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => !x.IsPage && x.CatalogId == catalog.Id)
                 .OrderByDescending(x => x.Time), 5, "Home");
         }
@@ -64,7 +64,7 @@ namespace JoyOI.Blog.Controllers
             return PagedView<PostViewModel, Post>(DB.Posts
                 .Include(x => x.Tags)
                 .Include(x => x.Catalog)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => !x.IsPage)
                 .Where(x => x.Tags.Any(y => y.Tag == tag))
                 .OrderByDescending(x => x.Time), 5, "Home");
@@ -76,7 +76,7 @@ namespace JoyOI.Blog.Controllers
             return PagedView<PostViewModel, Post>(DB.Posts
                 .Include(x => x.Tags)
                 .Include(x => x.Catalog)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => !x.IsPage)
                 .Where(x => x.Title.Contains(id) || id.Contains(x.Title))
                 .OrderByDescending(x => x.Time), 5, "Home");

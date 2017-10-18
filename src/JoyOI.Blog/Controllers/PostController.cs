@@ -12,7 +12,7 @@ namespace JoyOI.Blog.Controllers
             var post = DB.Posts
                 .Include(x => x.Catalog)
                 .Include(x => x.Tags)
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => x.Url == id && !x.IsPage)
                 .SingleOrDefault();
             if (post == null)
@@ -33,7 +33,7 @@ namespace JoyOI.Blog.Controllers
         public IActionResult Page(string id)
         {
             var post = DB.Posts
-                .Where(x => x.UserId == SiteOwner.Id)
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => x.Url == id && x.IsPage)
                 .SingleOrDefault();
             if (post == null)

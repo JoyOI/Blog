@@ -3,12 +3,15 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JoyOI.Blog.Models;
+using System.Collections.Generic;
 
 namespace JoyOI.Blog.Controllers
 {
     public class BaseController : BaseController<BlogContext, User, Guid>
     {
         public User SiteOwner { get; private set; }
+
+        public Guid? SiteOwnerId { get; private set; }
 
         public override void Prepare()
         {
@@ -19,7 +22,7 @@ namespace JoyOI.Blog.Controllers
                 .SingleOrDefault(x => x.Domain == HttpContext.Request.Host.Host)
                 ?.User;
 
-            if (SiteOwner == null && !Request.Path.Value.ToLower().StartsWith("/admin"))
+            if (SiteOwner == null && !Request.Path.Value.ToLower().StartsWith("/admin") && !Request.Path.Value.ToLower().StartsWith("/api"))
             {
                 HttpContext.Response.Redirect("http://www.joyoi.net");
                 return;
@@ -35,12 +38,16 @@ namespace JoyOI.Blog.Controllers
             ViewBag.Account = SiteOwner?.Nickname;
             ViewBag.DefaultTemplate = SiteOwner?.Template;
 
-            var siteOwnerId = SiteOwner?.Id;
+            SiteOwnerId = SiteOwner?.Id;
             ViewBag.OwnerId = SiteOwner == null ? null : (Guid?)SiteOwner.Id;
+            ViewBag.Owner = SiteOwner;
 
             // Building Tags
-            ViewBag.Tags = DB.PostTags
-                .Where(x => x.Post.UserId == siteOwnerId)
+            var tags = new List<TagViewModel>();
+            if (SiteOwner != null)
+            {
+                tags = DB.PostTags
+                .Where(x => x.Post.UserId == SiteOwnerId)
                 .OrderBy(x => x.Tag)
                 .GroupBy(x => x.Tag)
                 .Select(x => new TagViewModel
@@ -49,10 +56,15 @@ namespace JoyOI.Blog.Controllers
                     Count = x.Count()
                 })
                 .ToList();
+            }
+            ViewBag.Tags = tags;
 
             // Building Calendar
-            ViewBag.Calendars = DB.Posts
-                .Where(x => x.UserId == siteOwnerId)
+            var calendars = new List<CalendarViewModel>();
+            if (SiteOwner != null)
+            {
+                calendars = DB.Posts
+                .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => !x.IsPage)
                 .OrderByDescending(x => x.Time)
                 .GroupBy(x => new { Year = x.Time.Year, Month = x.Time.Month })
@@ -62,12 +74,17 @@ namespace JoyOI.Blog.Controllers
                     Month = x.Key.Month,
                     Count = x.Count()
                 })
-                .ToList();
+                .ToList(); 
+            }
+            ViewBag.Calendars = calendars;
 
             // Building Catalogs
-            ViewBag.Catalogs = DB.Catalogs
+            var catalogs = new List<CatalogViewModel>();
+            if (SiteOwner != null)
+            {
+                catalogs = DB.Catalogs
                 .Include(x => x.Posts)
-                .Where(x => x.UserId == siteOwnerId)
+                .Where(x => x.UserId == SiteOwnerId)
                 .OrderByDescending(x => x.PRI)
                 .ToList()
                 .Select(x => new CatalogViewModel
@@ -78,7 +95,9 @@ namespace JoyOI.Blog.Controllers
                     PRI = x.PRI,
                     Url = x.Url
                 })
-                .ToList();
+                .ToList(); 
+            }
+            ViewBag.Catalogs = catalogs;
         }
     }
 }
