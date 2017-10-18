@@ -21,7 +21,9 @@ namespace JoyOI.Blog.Controllers
 
             var query = DB.Posts
                 .Include(x => x.User)
-                .Where(x => x.ProblemId == id);
+                .Include(x => x.Tags)
+                .Where(x => x.ProblemId == id)
+                .Where(x => x.Content.Length > 0);
 
             var count = await query.CountAsync(token);
 
@@ -36,6 +38,7 @@ namespace JoyOI.Blog.Controllers
                     username = x.User.UserName,
                     avatarUrl = x.User.AvatarUrl,
                     url = Request.Scheme + "://" + Request.Host + Request.Path
+                    tags = x.Tags.Select(y => y.Tag)
                 })
                 .Skip((page.Value - 1) * 20)
                 .Take(20)
