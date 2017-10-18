@@ -52,5 +52,16 @@ namespace JoyOI.Blog.Controllers
                 data = posts
             });
         }
+
+        [Route("Api/BlogDomain/{id}")]
+        public async Task<IActionResult> BlogDomain(string id, CancellationToken token)
+        {
+            var domain = await DB.DomainBindings
+                .Where(x => x.User.UserName == id)
+                .OrderByDescending(x => x.IsDeletable)
+                .FirstAsync(token);
+
+            return Content(domain.Domain);
+        }
     }
 }
