@@ -37,7 +37,7 @@ namespace JoyOI.Blog.Controllers
                     userId = x.User.OpenId,
                     username = x.User.UserName,
                     avatarUrl = x.User.AvatarUrl,
-                    url = Request.Scheme + "://" + Request.Host + Request.Path
+                    url = Request.Scheme + "://" + Request.Host + "/post/" + x.Id,
                     tags = x.Tags.Select(y => y.Tag)
                 })
                 .Skip((page.Value - 1) * 20)
