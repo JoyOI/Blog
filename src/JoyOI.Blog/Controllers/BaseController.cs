@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using JoyOI.Blog.Models;
 using System.Collections.Generic;
 
@@ -24,7 +26,7 @@ namespace JoyOI.Blog.Controllers
 
             if (SiteOwner == null && !Request.Path.Value.ToLower().StartsWith("/admin") && !Request.Path.Value.ToLower().StartsWith("/api"))
             {
-                HttpContext.Response.Redirect("http://www.joyoi.net");
+                HttpContext.Response.Redirect(HttpContext.RequestServices.GetService<IConfiguration>()["JoyOI:OjHomeUrl"]);
                 return;
             }
 
