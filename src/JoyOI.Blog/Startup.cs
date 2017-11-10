@@ -57,6 +57,7 @@ namespace JoyOI.Blog
 
             services.AddSmartCookies();
             services.AddSmartUser<User, Guid>();
+            services.AddAntiXss();
 
             services.AddJoyOIUserCenter();
             services.AddExternalApi();

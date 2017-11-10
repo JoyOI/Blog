@@ -23,7 +23,7 @@
         <div class="grid_9">
             <div class="post">
                 <div class="post-body">
-                    @Html.Marked(Model.Content)
+                    @Html.Sanitize(Html.Marked(Model.Content))
                 </div>
                 @if (Html.IsAdmin())
                 {
