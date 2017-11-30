@@ -1,6 +1,6 @@
 ﻿{
   "Title": "Default Template",
-  "IsDefault": true,
+  "IsDefault": false,
   "Author": "Breeswish",
   "License": "https://breeswish.org",
   "Version": "2.0.0",

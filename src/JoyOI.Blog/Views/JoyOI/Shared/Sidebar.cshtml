@@ -1,0 +1,51 @@
+﻿<div class="grid_3">
+    @if (Model != null && Model.GetType() == typeof(Post) && (Html.IsAdmin() || !Model.IsPage))
+    {
+    <div class="sidebar-section">
+        <div class="sidebar-section-header">
+            <h1>@SR["THIS POST"]</h1>
+        </div>
+        @if (!Model.IsPage)
+        {
+        <div class="sidebar-section-body">
+            <dl>
+                <dt>@SR["Post at"]</dt>
+                <dd>@Model.Time.ToString()</dd>
+            </dl>
+            @if (Model.CatalogId != null)
+            { 
+            <dl>
+                <dt>@SR["Catalog"]</dt>
+                <dd><a href="/catalog/@Model.Catalog.Url.ToLower()">@Model.Catalog.Url.ToUpper()</a></dd>
+            </dl>
+            }
+            @if (Model.Tags.Count > 0)
+            {
+            <dl>
+                <dt>@SR["Tags"]</dt>
+                <dd>
+                    @foreach (PostTag x in Model.Tags)
+                    {
+                        <div class="tag-item"><a href="/tag/@x.Tag">@x.Tag</a></div>
+                    }
+                </dd>
+            </dl>
+            }
+            @if (Html.IsAdmin())
+            { 
+                <dl>
+                    <dt><a href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();" yuuko-static>@SR["Edit this post"]</a></dt>
+                </dl>
+                <dl>
+                    <dt><a href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();" yuuko-static>@SR["Edit this post"]</a></dt>
+                </dl>
+                <a href="javascript:$('#frmDeletePost').submit();" yuuko-static>@SR["Remove this post"]</a>
+            }
+            <form id="frmDeletePost" asp-action="PostDelete" asp-controller="Admin" method="post" asp-route-id="@Model.Url"></form>
+            <form asp-action="PostEdit" asp-controller="Admin" method="post" id="frmSavePost"></form>
+            <div class="clear"></div>
+        </div>
+        }
+    </div>
+    }
+</div>

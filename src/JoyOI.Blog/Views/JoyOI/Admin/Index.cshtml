@@ -1,0 +1,38 @@
+﻿@model User
+@{
+    ViewBag.Title = SR["Admin Panel"];
+}
+
+@section Navigator {
+    <div class="columns">
+        <div class="location-path">
+            / <a href="/">JoyOI</a> /
+        </div>
+        <h1 class="location-current" data-emoji-enabled="">@ViewBag.Title</h1>
+    </div>
+}
+
+<div class="container">
+    <div class="cont-wrap">
+        <div class="grid_9">
+            <div class="post-body">
+                <form asp-action="Index" asp-controller="Admin" method="post" id="frmConfig">
+                    <p>
+                        @SR["Site name"]: <br />
+                        <input type="text" name="site" value="@Model.SiteName" />
+                    </p>
+                    <p>
+                        @SR["Description"]: <br />
+                        <input type="text" name="summary" value="@Model.Summary" />
+                    </p>
+                    <p>
+                        <input type="submit" value="@SR["Save"]">
+                    </p>
+                </form>
+
+            </div>
+        </div>
+
+        @Html.Partial("Sidebar")
+    </div>
+</div>

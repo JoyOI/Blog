@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = SR["Admin Panel"];
+}
+
+<div class="row">
+    <div class="col-md-8 col-sm-12 col-md-offset-2">
+        <div class="card card-single card-error">
+            <div class="error-block-inner">
+                <h3>@SR["Admin Panel"]</h3>
+                <form asp-action="Login" asp-controller="Admin" method="post">
+                    <p>
+                        <span class="texthold">@SR["User Name"]</span>
+                        <input type="text" class="textbox w-3" name="username" />
+                    </p>
+                    <p>
+                        <span class="texthold">@SR["Password"]</span>
+                        <input type="password" class="textbox w-3" name="password" />
+                    </p>
+                    <input type="submit" value="@SR["Log In"]" class="btn btn-default ripple home-link" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
