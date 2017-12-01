@@ -1,38 +1,43 @@
 ﻿@model IEnumerable<dynamic>
-@section Navigator {
-    <div class="columns">
-        <div class="location-path">
-            / <a href="/">JoyOI</a> /
+
+@if (ViewBag.Position != null && !string.IsNullOrEmpty(ViewBag.Position) && ViewBag.Position != "home")
+{
+    @section Navigator {
+        <div class="columns">
+            <div class="location-path">
+                / <a href="/">@ViewBag.SiteName</a> /
+            </div>
+            <h1 class="location-current" data-emoji-enabled="">@ViewBag.Title</h1>
         </div>
-        <h1 class="location-current" data-emoji-enabled="">@ViewBag.Title</h1>
-    </div>
+    }
 }
+
 
 <div class="container">
     <div class="cont-wrap">
         <div class="grid_9">
             <div class="post-list">
                 @foreach (dynamic x in Model)
-            {
-                <div class="post">
-                    <div class="post-title"><h2><a href="/post/@x.Url">@x.Title</a></h2></div>
-                    <div class="post-body">
-                        @Html.Sanitize(Html.Marked(x.Summary as string))
+                {
+                    <div class="post">
+                        <div class="post-title"><h2><a href="/post/@x.Url">@x.Title</a></h2></div>
+                        <div class="post-body">
+                            @Html.Sanitize(Html.Marked(x.Summary as string))
+                        </div>
+                        <div class="post-tags">
+                            @if (x.CatalogId != null)
+                            {
+                                <div class="post-catalog-item"><i class="fa fa-tags"></i> <a href="/catalog/@x.Catalog.Url.ToLower()/">@x.Catalog.Url</a></div>
+                            }
+                            @foreach (PostTag t in x.Tags)
+                            {
+                                <div class="post-tag-item"><a href="/tag/@t.Tag/">@t.Tag</a></div>
+                            }
+                            <div class="clear"></div>
+                        </div>
+                        <div class="post-time"><i class="fa fa-clock-o"></i> Published on @x.Time</div>
                     </div>
-                    <div class="post-tags">
-                        @if (x.CatalogId != null)
-                    {
-                        <div class="post-catalog-item post-catalog-item-@x.Catalog.Url.ToLower()"><a href="/catalog/@x.Catalog.Url.ToLower() %>/">@x.Catalog.Url</a></div>
                 }
-                        @foreach (PostTag t in x.Tags)
-                    {
-                        <div class="post-tag-item"><a href="/tag/@t.Tag/">@t.Tag</a></div>
-                }
-                        <div class="clear"></div>
-                    </div>
-                    <div class="post-time"><i class="fa fa-clock-o"></i> Published on @x.Time</div>
-                </div>
-        }
             </div>
             @Html.Paging("post-nav-page", "post-nav-page-current", "post-nav", null, new[] { "raw" })
             <div class="clear"></div>

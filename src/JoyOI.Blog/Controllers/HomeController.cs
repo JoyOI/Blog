@@ -24,6 +24,9 @@ namespace JoyOI.Blog.Controllers
         {
             var begin = new DateTime(year, month, 1);
             var end = begin.AddMonths(1);
+
+            ViewBag.Title = year + "/" + month;
+
             return PagedView<PostViewModel, Post>(DB.Posts
                 .Include(x => x.Tags)
                 .Include(x => x.Catalog)
@@ -40,6 +43,7 @@ namespace JoyOI.Blog.Controllers
                 .Where(x => x.UserId == SiteOwnerId)
                 .Where(x => x.Url == id)
                 .SingleOrDefault();
+
             if (catalog == null)
                 return Prompt(x =>
                 {
@@ -49,7 +53,10 @@ namespace JoyOI.Blog.Controllers
                     x.RedirectUrl = Url.Link("default", new { controller = "Home", action = "Index" });
                     x.RedirectText = SR["Back to home"];
                 });
+
+            ViewBag.Title = catalog.Title;
             ViewBag.Position = catalog.Url;
+
             return PagedView<PostViewModel, Post>(DB.Posts
                 .Include(x => x.Tags)
                 .Include(x => x.Catalog)
@@ -61,6 +68,9 @@ namespace JoyOI.Blog.Controllers
         [Route("Tag/{tag}/{p:int?}")]
         public IActionResult Tag(string tag, int p = 1)
         {
+            ViewBag.Title = tag;
+            ViewBag.Position = "tag";
+
             return PagedView<PostViewModel, Post>(DB.Posts
                 .Include(x => x.Tags)
                 .Include(x => x.Catalog)

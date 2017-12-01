@@ -33,8 +33,9 @@ namespace JoyOI.Blog.Controllers
             // Building Constants
             ViewBag.Position = "home";
             ViewBag.IsPost = false;
-            ViewBag.Description = SiteOwner?.Summary;
+            ViewBag.Description = SiteOwner?.Summary ?? "Joy OI Blog";
             ViewBag.Title = SiteOwner?.SiteName;
+            ViewBag.SiteName = SiteOwner?.SiteName ?? "Joy OI";
             ViewBag.AboutUrl = "/about";
             ViewBag.AvatarUrl = SiteOwner?.AvatarUrl;
             ViewBag.Account = SiteOwner?.Nickname;

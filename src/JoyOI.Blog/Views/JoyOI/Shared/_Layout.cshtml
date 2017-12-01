@@ -25,9 +25,6 @@
                         <span class="sr-only">Toggle navigation</span>
                         <i class="fa fa-list mobile-menu"></i>
                     </button>
-                    <!-- start logo -->
-                    <a class="navbar-logo" asp-controller="Home" asp-action="Index"><img src="~/assets/JoyOI/images/logo-bk.png" /></a>
-                    <!-- end logo -->
                 </div>
                 @Html.Partial("_Navigator")
             </div>
@@ -38,7 +35,18 @@
     <div class="cover cover-single mobile-cover @(IsSectionDefined("Navigator") == false ? "" : "cover-url")">
         <div class="cont-wrap">
             <div class="grid_12 mobile-cover-center" style="text-align:left">
-                <img src="~/assets/JoyOI/images/logo.png" class="mobile-cover-img" style="height:140px;margin-top:-60px;" />
+                @if (string.IsNullOrWhiteSpace(ViewBag.AvatarUrl))
+                {
+                    <img src="~/assets/JoyOI/images/logo.png" class="mobile-cover-img" style="height:140px;margin-top:-60px;" />
+                }
+                else
+                {
+                    <img src="@ViewBag.AvatarUrl" class="mobile-cover-img logo-avatar" />
+                    <div class="logo-userinfo">
+                        <h2>@ViewBag.SiteName</h2>
+                        <p>@ViewBag.Description</p>
+                    </div>
+                }
             </div>
         </div>
         @if (IsSectionDefined("Navigator"))

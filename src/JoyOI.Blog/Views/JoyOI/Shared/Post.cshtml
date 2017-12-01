@@ -5,7 +5,11 @@
 @section Navigator {
     <div class="columns">
         <div class="location-path">
-            / <a href="/">JoyOI</a> /
+            / <a href="/">@ViewBag.SiteName</a> /
+            @if (!Model.IsPage && Model.CatalogId.HasValue)
+            {
+                <a href="/catalog/@Model.Catalog.Url">@Model.Catalog.Title</a> <span>/</span>
+            }
         </div>
         <h1 class="location-current" data-emoji-enabled="">@ViewBag.Title</h1>
     </div>
@@ -34,7 +38,7 @@
                         </p>
                         <p>
                             <div class="markdown-editor-outer">
-                                <textarea class="markdown-editor" name="Content">@(new HtmlString(Model.Content))</textarea>
+                                <textarea class="markdown-editor" name="Content" id="txtContent">@(new HtmlString(Model.Content))</textarea>
                                 <div class="markdown-editor-bottom">拖拽文件、粘贴文件或<a href="javascript:;" onclick="uploadAttachment()">选择文件</a>以添加附件。</div>
                             </div>
                         </p>
@@ -58,10 +62,6 @@
                     <h2>@SR["Comments"]</h2>
                     <div id="disqus_thread"></div>
                 </div>
-            </div>
-            <div class="qrcode">
-                <div id="qrcode" data-url="@(Context.Request.Scheme + "://" + Context.Request.Host + Context.Request.Path)"></div>
-                <span>使用微信扫码</span>
             </div>
             @Html.Partial("Sidebar")
         </div>

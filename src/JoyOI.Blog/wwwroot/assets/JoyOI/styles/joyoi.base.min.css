@@ -15811,7 +15811,7 @@ td i {
     font-size: 14px;
     line-height: 14px;
     font-weight: 300;
-    padding: 12px 20px;
+    padding: 12px 20px 12px 30px;
 }
 
     .sidebar-section-button i {
@@ -15856,7 +15856,7 @@ td i {
 
 .post-nav {
     padding: 0;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .post-nav-page {
@@ -15952,7 +15952,7 @@ td i {
 }
 
 .manage-sidebar {
-    padding: 5px 0;
+    padding: 10px 0;
 }
 
 .post {
@@ -15962,8 +15962,63 @@ td i {
 .post-time {
     font-size: 16px;
     color: #aaa;
+    margin-top: 15px;
 }
 
 .comments {
     margin-top: 30px;
 }
+
+.logo-avatar {
+    height: 124px;
+    width: 124px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    float: left;
+    margin-top: -40px;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.2);
+}
+
+.logo-userinfo {
+    float: left;
+    margin-top: -40px;
+    padding-left: 30px;
+    width: calc(100% - 130px - 30px);
+    color: #fff;
+    text-shadow: 2px 2px 2px rgba(0,0,0,0.2);
+}
+
+    .logo-userinfo h2 {
+        color: #fff;
+        text-shadow: 2px 2px 2px rgba(0,0,0,0.2);
+        margin-top: 15px;
+    }
+
+.post-tag-item, .post-catalog-item {
+    border-bottom: 3px solid #ccc;
+    margin-right: 5px;
+    display: inline-block;
+    padding: 0 8px;
+}
+
+.post-tag-item a {
+    color: #aaa;
+}
+
+    .post-tag-item a:hover {
+        color: #999;
+    }
+
+.post-catalog-item {
+    background-color: #ab7373;
+    border-bottom: 3px solid #7d4b4b;
+    color: #fff;
+}
+
+    .post-catalog-item a {
+        color: #fff;
+    }
+
+    .post-catalog-item:hover {
+        background-color: #b18686;
+    }
