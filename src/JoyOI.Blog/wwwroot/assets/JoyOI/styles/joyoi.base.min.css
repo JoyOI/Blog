@@ -12805,7 +12805,8 @@ iframe {
     -moz-transition: all .45s;
     -ms-transition: all .45s;
     -o-transition: all .45s;
-    transition: all .45s
+    transition: all .45s;
+    background: #ddd;
 }
 
 .btn-default {
@@ -13213,8 +13214,8 @@ pre {
 }
 
 .main-content-area {
-    padding-top: 64px;
-    padding-bottom: 64px
+    padding-top: 32px;
+    padding-bottom: 32px
 }
 
 .card {
@@ -15310,6 +15311,7 @@ td .comment-item:last-child {
     border-radius: 10px 10px 0 0;
     outline: 0;
     display: block;
+    height: 380px;
     width: calc(100% - 20px)
 }
 
@@ -15682,18 +15684,19 @@ td i {
 }
 
 .sidebar-section-header {
-    padding: 30px 20px 0 20px
+    padding: 30px 30px 0 30px;
 }
 
     .sidebar-section-header h1 {
         margin-bottom: 0;
         font-size: 24px;
         line-height: 24px;
-        font-weight: 400
+        font-weight: 400;
+        color: #aaa;
     }
 
 .sidebar-section-body {
-    padding: 10px 20px 30px 20px
+    padding: 10px 30px 30px 30px
 }
 
     .sidebar-section-body dl {
@@ -15928,4 +15931,39 @@ td i {
     height: 256px;
     width: 256px;
     margin-bottom: 15px;
+}
+
+.sidebar-item {
+    margin: 3px 0;
+}
+
+.sidebar-hr {
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+.sidebar-admin {
+    margin-top: -20px;
+    padding-bottom: 10px;
+}
+
+.editing {
+    display: none;
+}
+
+.manage-sidebar {
+    padding: 5px 0;
+}
+
+.post {
+    margin-right: 20px;
+}
+
+.post-time {
+    font-size: 16px;
+    color: #aaa;
+}
+
+.comments {
+    margin-top: 30px;
 }

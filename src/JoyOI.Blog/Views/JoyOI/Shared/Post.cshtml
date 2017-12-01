@@ -21,10 +21,10 @@
                     @if (Html.IsAdmin())
                 {
                     <div class="post-edit">
-                        <p><input id="txtTitle" type="text" placeholder="@SR["Title"]" value="@Model.Title" /></p>
-                        <p><input id="txtUrl" type="text" placeholder="URL" value="@Model.Url" /></p>
+                        <p><input id="txtTitle" type="text" class="textbox" placeholder="@SR["Title"]" value="@Model.Title" /></p>
+                        <p><input id="txtUrl" type="text" class="textbox" placeholder="URL" value="@Model.Url" /></p>
                         <p>
-                            <select id="lstCatalogs">
+                            <select id="lstCatalogs" class="textbox">
                                 <option value="">未分类</option>
                                 @foreach (CatalogViewModel c in ViewBag.Catalogs)
                             {
@@ -33,36 +33,29 @@
                             </select>
                         </p>
                         <p>
-                            <div class="markdown-textbox-outer">
-                                <textarea id="txtContent" class="markdown-textbox" name="Content" placeholder="Markdown here...">@(new HtmlString(Model.Content))</textarea>
-                                <div class="markdown-textbox-bottom">拖拽文件、粘贴文件或<a href="javascript:;" onclick="uploadAttachment()">选择文件</a>以添加附件。</div>
+                            <div class="markdown-editor-outer">
+                                <textarea class="markdown-editor" name="Content">@(new HtmlString(Model.Content))</textarea>
+                                <div class="markdown-editor-bottom">拖拽文件、粘贴文件或<a href="javascript:;" onclick="uploadAttachment()">选择文件</a>以添加附件。</div>
                             </div>
                         </p>
-                        <form id="frmAjaxUpload">
+                        <form id="frmAjaxUpload" style="display: none">
                             <input type="file" id="uploadFile" name="file" />
                         </form>
                         <p>
-                            <input type="text" id="txtTags" placeholder="@SR["Use a ',' to split tags"]" value="@Html.TagSerialize(Model.Tags)" />
+                            <input type="text" class="textbox" id="txtTags" placeholder="@SR["Use a ',' to split tags"]" value="@Html.TagSerialize(Model.Tags)" />
                         </p>
                         <p>
-                            <input type="checkbox" id="chkIsPage" @(Model.IsPage ? "checked" : "") /> @SR["Is a page"]
+                            @SR["Is a page"] <input type="checkbox" id="chkIsPage" @(Model.IsPage ? "checked" : "") />
                         </p>
                         <p>
-                            <input type="button" id="btnSavePost" onclick="savePost('@Model.Url')" value="@SR["Save"]" class="more-link" />
-                            <a href="javascript:$('.post-edit').slideUp();$('.post-body').slideDown();" yuuko-static>@SR["Cancel"]</a>
+                            <input type="button" id="btnSavePost" onclick="savePost('@Model.Url')" value="@SR["Save"]" class="btn btn-default" />
+                            <a class="btn" href="javascript:$('.post-edit').slideUp();$('.post-body').slideDown();" yuuko-static>@SR["Cancel"]</a>
                         </p>
                     </div>
             }
                 </div>
-                <div class="community-sharing">
-                    <span>@SR["Share to:"]</span>
-                    <div class="community-sharing-links">
-                        <a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?showcount=0&desc=&summary=&url=@(Context.Request.Scheme + "://" + Context.Request.Host + Context.Request.Path)&Title=@Model.Title&Site=@("Amamiya Yuuko\'s ebullient future")"><img src="~/assets/Default/images/qzone.png" /></a>
-                        <a href="javascript:showQrCode();"><img src="~/assets/Default/images/wechat.png" /></a>
-                    </div>
-                </div>
                 <div class="comments">
-                    <h2>Comments</h2>
+                    <h2>@SR["Comments"]</h2>
                     <div id="disqus_thread"></div>
                 </div>
             </div>

@@ -10,7 +10,7 @@
                 <div class="sidebar-section-body">
                     <dl>
                         <dt>@SR["Post at"]</dt>
-                        <dd>@Model.Time.ToString()</dd>
+                        <dd>@Model.Time.ToShortDateString()</dd>
                     </dl>
                     @if (Model.CatalogId != null)
                     {
@@ -31,19 +31,23 @@
                             </dd>
                         </dl>
                     }
-                    @if (Html.IsAdmin())
-                    {
-                        <dl>
-                            <dt><a href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();" yuuko-static>@SR["Edit this post"]</a></dt>
-                        </dl>
-                        <dl>
-                            <dt><a href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();" yuuko-static>@SR["Edit this post"]</a></dt>
-                        </dl>
-                        <a href="javascript:$('#frmDeletePost').submit();" yuuko-static>@SR["Remove this post"]</a>
-                    }
-                    <form id="frmDeletePost" asp-action="PostDelete" asp-controller="Admin" method="post" asp-route-id="@Model.Url"></form>
-                    <form asp-action="PostEdit" asp-controller="Admin" method="post" id="frmSavePost"></form>
                     <div class="clear"></div>
+                </div>
+            }
+            @if (Html.IsAdmin())
+            {
+                <div class="sidebar-admin">
+                <hr class="sidebar-hr">
+                <a class="sidebar-section-button" href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();">
+                    <i class="fa fa-edit"></i>
+                    <span>@SR["Edit this post"]</span>
+                </a>
+                <a class="sidebar-section-button" href="javascript:if(confirm('@SR["Are you sure you want to remove this post?"]')){ $('#frmDeletePost').submit(); }">
+                    <i class="fa fa-remove"></i>
+                    <span>@SR["Remove this post"]</span>
+                </a>
+                <form id="frmDeletePost" asp-action="PostDelete" asp-controller="Admin" method="post" asp-route-id="@Model.Url"></form>
+                <form asp-action="PostEdit" asp-controller="Admin" method="post" id="frmSavePost"></form>
                 </div>
             }
         </div>
@@ -105,18 +109,25 @@
 
     @if (Html.IsAdmin())
     {
-        <div class="sidebar-section profile-sidebar">
-            <div class="sidebar-section-header">
-                <h1>@SR["MANAGE"]</h1>
-            </div>
-            <div class="sidebar-section-body">
-                <ul class="sidebar-list">
-                    <li class="sidebar-item"><a yuuko-static href="/admin/index">@SR["Settings"]</a></li>
-                    <li class="sidebar-item"><a yuuko-static href="javascript:$('#frmNewPost').submit();">@SR["New Post"]</a></li>
-                    <li class="sidebar-item"><a href="/admin/catalog">@SR["Manage Catalogs"]</a></li>
-                    <li class="sidebar-item"><a yuuko-static href="javascript:$('#frmLogout').submit();">@SR["Sign Out"]</a></li>
-                </ul>
-            </div>
+        <div class="sidebar-section profile-sidebar manage-sidebar">
+            <a class="sidebar-section-button" href="/admin/index">
+                <i class="fa fa-cog"></i>
+                <span>@SR["Settings"]</span>
+            </a>
+            <hr class="sidebar-hr">
+            <a class="sidebar-section-button" href="javascript:$('#frmNewPost').submit();">
+                <i class="fa fa-file-text-o"></i>
+                <span>@SR["New Post"]</span>
+            </a>
+            <a class="sidebar-section-button" href="/admin/catalog">
+                <i class="fa fa-star-o"></i>
+                <span>@SR["Manage Catalogs"]</span>
+            </a>
+            <hr class="sidebar-hr">
+            <a class="sidebar-section-button" href="javascript:$('#frmLogout').submit();">
+                <i class="fa fa-sign-out"></i>
+                <span>@SR["Sign Out"]</span>
+            </a>
         </div>
         <form asp-action="PostNew" asp-controller="Admin" method="post" id="frmNewPost"></form>
         <form asp-action="Logout" asp-controller="Admin" method="post" id="frmLogout"></form>

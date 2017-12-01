@@ -254,7 +254,7 @@ namespace JoyOI.Blog.Controllers
             var post = new Post
             {
                 Id = Guid.NewGuid(),
-                Url = Guid.NewGuid().ToString().Substring(0, 8),
+                Url = "post-" + Guid.NewGuid().ToString().Substring(0, 8),
                 Title = SR["Untitled Post"],
                 Content = "",
                 Summary = "",
@@ -339,6 +339,16 @@ namespace JoyOI.Blog.Controllers
                     x.Title = SR["Access Denied"];
                     x.Details = SR["You don't have the permission to access this page."];
                     x.StatusCode = 403;
+                });
+            }
+
+            if (!char.IsLetter(newId[0]))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Failed"];
+                    x.Details = SR["The first char of ID must be a letter."];
+                    x.StatusCode = 400;
                 });
             }
 

@@ -1016,14 +1016,6 @@ function showQrCode() {
     $('.qrcode').addClass('qrcode-active');
 }
 
-function BlogRoll(github)
-{
-    if (confirm("Follow me on GitHub will add you here automatically. Do you want to follow me now?"))
-    {
-        window.location = "https://github.com/" + github;
-    }
-}
-
 function uploadAttachment()
 {
     $('#uploadFile').unbind('change').change(function () {
