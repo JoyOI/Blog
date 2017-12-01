@@ -1,51 +1,124 @@
 ﻿<div class="grid_3">
     @if (Model != null && Model.GetType() == typeof(Post) && (Html.IsAdmin() || !Model.IsPage))
     {
-    <div class="sidebar-section">
-        <div class="sidebar-section-header">
-            <h1>@SR["THIS POST"]</h1>
-        </div>
-        @if (!Model.IsPage)
-        {
-        <div class="sidebar-section-body">
-            <dl>
-                <dt>@SR["Post at"]</dt>
-                <dd>@Model.Time.ToString()</dd>
-            </dl>
-            @if (Model.CatalogId != null)
-            { 
-            <dl>
-                <dt>@SR["Catalog"]</dt>
-                <dd><a href="/catalog/@Model.Catalog.Url.ToLower()">@Model.Catalog.Url.ToUpper()</a></dd>
-            </dl>
-            }
-            @if (Model.Tags.Count > 0)
+        <div class="sidebar-section profile-sidebar">
+            <div class="sidebar-section-header">
+                <h1>@SR["THIS POST"]</h1>
+            </div>
+            @if (!Model.IsPage)
             {
-            <dl>
-                <dt>@SR["Tags"]</dt>
-                <dd>
-                    @foreach (PostTag x in Model.Tags)
+                <div class="sidebar-section-body">
+                    <dl>
+                        <dt>@SR["Post at"]</dt>
+                        <dd>@Model.Time.ToString()</dd>
+                    </dl>
+                    @if (Model.CatalogId != null)
                     {
-                        <div class="tag-item"><a href="/tag/@x.Tag">@x.Tag</a></div>
+                        <dl>
+                            <dt>@SR["Catalog"]</dt>
+                            <dd><a href="/catalog/@Model.Catalog.Url.ToLower()">@Model.Catalog.Url.ToUpper()</a></dd>
+                        </dl>
                     }
-                </dd>
-            </dl>
+                    @if (Model.Tags.Count > 0)
+                    {
+                        <dl>
+                            <dt>@SR["Tags"]</dt>
+                            <dd>
+                                @foreach (PostTag x in Model.Tags)
+                                {
+                                    <div class="tag-item"><a href="/tag/@x.Tag">@x.Tag</a></div>
+                                }
+                            </dd>
+                        </dl>
+                    }
+                    @if (Html.IsAdmin())
+                    {
+                        <dl>
+                            <dt><a href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();" yuuko-static>@SR["Edit this post"]</a></dt>
+                        </dl>
+                        <dl>
+                            <dt><a href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();" yuuko-static>@SR["Edit this post"]</a></dt>
+                        </dl>
+                        <a href="javascript:$('#frmDeletePost').submit();" yuuko-static>@SR["Remove this post"]</a>
+                    }
+                    <form id="frmDeletePost" asp-action="PostDelete" asp-controller="Admin" method="post" asp-route-id="@Model.Url"></form>
+                    <form asp-action="PostEdit" asp-controller="Admin" method="post" id="frmSavePost"></form>
+                    <div class="clear"></div>
+                </div>
             }
-            @if (Html.IsAdmin())
-            { 
-                <dl>
-                    <dt><a href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();" yuuko-static>@SR["Edit this post"]</a></dt>
-                </dl>
-                <dl>
-                    <dt><a href="javascript:DropEnable();$('.post-body').slideUp();$('.post-edit').slideDown();" yuuko-static>@SR["Edit this post"]</a></dt>
-                </dl>
-                <a href="javascript:$('#frmDeletePost').submit();" yuuko-static>@SR["Remove this post"]</a>
-            }
-            <form id="frmDeletePost" asp-action="PostDelete" asp-controller="Admin" method="post" asp-route-id="@Model.Url"></form>
-            <form asp-action="PostEdit" asp-controller="Admin" method="post" id="frmSavePost"></form>
-            <div class="clear"></div>
         </div>
-        }
-    </div>
+    }
+
+    @if (ViewBag.Catalogs != null && ViewBag.Catalogs.Count > 0)
+    {
+        <div class="sidebar-section profile-sidebar">
+            <div class="sidebar-section-header">
+                <h1>@SR["CATALOGS"]</h1>
+            </div>
+            <div class="sidebar-section-body">
+                <ul class="sidebar-list">
+                    @foreach (CatalogViewModel x in ViewBag.Catalogs)
+                    {
+                        <li class="sidebar-item"><a href="/catalog/@x.Url.ToLower()">@x.Url.ToUpper() (@x.Count)</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+
+    @if (ViewBag.Tags != null && ViewBag.Tags.Count > 0)
+    {
+        <div class="sidebar-section profile-sidebar">
+            <div class="sidebar-section-header">
+                <h1>@SR["TAGS"]</h1>
+            </div>
+            <div class="sidebar-section-body">
+                <ul class="sidebar-list">
+                    @foreach (TagViewModel x in ViewBag.Tags)
+                    {
+                        <li class="sidebar-item"><a href="/tag/@x.Title/">@x.Title (@x.Count)</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+
+    @if (ViewBag.Calendars != null && ViewBag.Calendars.Count > 0)
+    {
+        <div class="sidebar-section profile-sidebar">
+            <div class="sidebar-section-header">
+                <h1>@SR["CALENDARS"]</h1>
+            </div>
+            <div class="sidebar-section-body">
+                <ul class="sidebar-list">
+                    @if (ViewBag.Calendars != null)
+                    {
+                        @foreach (CalendarViewModel x in ViewBag.Calendars)
+                        {
+                            <li class="sidebar-item"><a href="/@x.Year/@x.Month">@(new DateTime(x.Year, x.Month, 1).ToString(SR["_DATE_FORMAT_STRING"])) (@x.Count)</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+
+    @if (Html.IsAdmin())
+    {
+        <div class="sidebar-section profile-sidebar">
+            <div class="sidebar-section-header">
+                <h1>@SR["MANAGE"]</h1>
+            </div>
+            <div class="sidebar-section-body">
+                <ul class="sidebar-list">
+                    <li class="sidebar-item"><a yuuko-static href="/admin/index">@SR["Settings"]</a></li>
+                    <li class="sidebar-item"><a yuuko-static href="javascript:$('#frmNewPost').submit();">@SR["New Post"]</a></li>
+                    <li class="sidebar-item"><a href="/admin/catalog">@SR["Manage Catalogs"]</a></li>
+                    <li class="sidebar-item"><a yuuko-static href="javascript:$('#frmLogout').submit();">@SR["Sign Out"]</a></li>
+                </ul>
+            </div>
+        </div>
+        <form asp-action="PostNew" asp-controller="Admin" method="post" id="frmNewPost"></form>
+        <form asp-action="Logout" asp-controller="Admin" method="post" id="frmLogout"></form>
     }
 </div>
