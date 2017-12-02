@@ -28,8 +28,11 @@ namespace JoyOI.Blog.Controllers
 
             var count = await query.CountAsync(token);
 
-            var posts = await query
+            var posts = (await query
                 .OrderByDescending(x => x.Time)
+                .Skip((page.Value - 1) * 20)
+                .Take(20)
+                .ToListAsync(token))
                 .Select(x => new
                 {
                     id = x.Id,
@@ -39,12 +42,9 @@ namespace JoyOI.Blog.Controllers
                     userId = x.User.OpenId,
                     username = x.User.UserName,
                     avatarUrl = x.User.AvatarUrl,
-                    domain = x.User.Domains.Last().Domain.TrimEnd('/'),
+                    domain = x.User.Domains.ToList().Last().Domain,
                     tags = x.Tags.Select(y => y.Tag)
-                })
-                .Skip((page.Value - 1) * 20)
-                .Take(20)
-                .ToListAsync(token);
+                });
 
             return Json(new
             {
@@ -80,7 +80,7 @@ namespace JoyOI.Blog.Controllers
                 .Where(x => x.UserName == id)
                 .SingleOrDefault();
 
-            var domain = user.Domains.Last().Domain.TrimEnd('/');
+            var domain = user.Domains.Last().Domain;
 
             var query = DB.Posts
                 .Include(x => x.User)

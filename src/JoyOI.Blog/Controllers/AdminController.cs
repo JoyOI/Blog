@@ -459,7 +459,7 @@ namespace JoyOI.Blog.Controllers
                 DB.Posts.Add(post);
                 await DB.SaveChangesAsync(token);
 
-                return RedirectToAction("Post", "Post", new { id = post.Id });
+                return RedirectToAction("Post", "Post", new { id = post.Url });
             }
         }
     }
