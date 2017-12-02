@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -71,6 +72,7 @@ namespace JoyOI.Blog.Controllers
         public async Task<IActionResult> Login(
             string Username, 
             string Password,
+            string RedirectUrl,
             [FromServices] JoyOIUC UC)
         {
             var authorizeResult = await UC.TrustedAuthorizeAsync(Username, Password);
@@ -118,7 +120,14 @@ namespace JoyOI.Blog.Controllers
 
                 await SignInManager.SignInAsync(user, true);
 
-                return RedirectToAction("Index");
+                if (!string.IsNullOrWhiteSpace(RedirectUrl))
+                {
+                    return Redirect(RedirectUrl);
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
             else
             {
@@ -397,6 +406,61 @@ namespace JoyOI.Blog.Controllers
             DB.Catalogs.Add(catalog);
             DB.SaveChanges();
             return RedirectToAction("Catalog", "Admin");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateSolution(string id, [FromServices] Helpers.ExternalApi Ext)
+        {
+            var passed = await Ext.GetAcceptedProblemsAsync(User.Current.UserName);
+            if (passed.Keys.Contains(id))
+            {
+                ViewBag.SolutionTitle = passed[id].title + " - 题解";
+                return View();
+            }
+            else
+            {
+                return Prompt(x => 
+                {
+                    x.Title = SR["Create solution failed"];
+                    x.Details = SR["You have not passed this problem yet."];
+                    x.StatusCode = 400;
+                });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSolution(string id, string title, [FromServices] Helpers.ExternalApi Ext, CancellationToken token)
+        {
+            var passed = await Ext.GetAcceptedProblemsAsync(User.Current.UserName);
+            if (!passed.Keys.Contains(id))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["Create solution failed"];
+                    x.Details = SR["You have not passed this problem yet."];
+                    x.StatusCode = 400;
+                });
+            }
+            else
+            {
+                var post = new Post
+                {
+                    ProblemId = id,
+                    ProblemTitle = passed[id].title,
+                    Title = title,
+                    Time = DateTime.Now,
+                    Url = "joyoi-solution-" + id + "-" + Guid.NewGuid().ToString().Substring(0, 8),
+                    UserId = User.Current.Id,
+                    Content = SR["### Solution\r\n\r\n...\r\n\r\n### Accepted Code\r\n\r\n```\r\n\r\n```"],
+                    Summary = SR["### Solution\r\n\r\n...\r\n\r\n### Accepted Code\r\n\r\n```\r\n\r\n```"]
+                };
+
+                DB.Posts.Add(post);
+                await DB.SaveChangesAsync(token);
+
+                return RedirectToAction("Post", "Post", new { id = post.Id });
+            }
         }
     }
 }

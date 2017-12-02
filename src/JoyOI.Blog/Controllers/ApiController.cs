@@ -63,5 +63,46 @@ namespace JoyOI.Blog.Controllers
 
             return Content(domain.Domain);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UserResolution(string id, int? page, CancellationToken token)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new InvalidOperationException("problem id could not be null");
+
+            if (!page.HasValue)
+                page = 1;
+
+            var query = DB.Posts
+                .Include(x => x.User)
+                .Include(x => x.Tags)
+                .Where(x => x.User.UserName == id)
+                .Where(x => !string.IsNullOrEmpty(x.ProblemId))
+                .Where(x => x.Content.Length > 0);
+
+            var count = await query.CountAsync(token);
+
+            var posts = await query
+                .OrderByDescending(x => x.Time)
+                .Select(x => new
+                {
+                    id = x.Id,
+                    title = x.Title,
+                    time = x.Time,
+                    problemId = x.ProblemId,
+                    problemTitle = x.ProblemTitle
+                })
+                .Skip((page.Value - 1) * 20)
+                .Take(20)
+                .ToListAsync(token);
+
+            return Json(new
+            {
+                pageSize = 20,
+                pageCount = (count + 20 - 1) / 20,
+                total = count,
+                data = posts
+            });
+        }
     }
 }

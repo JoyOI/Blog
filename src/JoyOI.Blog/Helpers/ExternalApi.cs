@@ -32,7 +32,7 @@ namespace JoyOI.Blog.Helpers
             public IEnumerable<string> passedProblems { get; set; }
         }
 
-        public async Task<Dictionary<string, string>> GetAcceptedProblemsAsync(string username)
+        public async Task<Dictionary<string, dynamic>> GetAcceptedProblemsAsync(string username)
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(_config["JoyOI:OnlineJudgeUrl"]) })
             {
@@ -40,7 +40,8 @@ namespace JoyOI.Blog.Helpers
                 var user = JsonConvert.DeserializeObject<ApiResult<OnlineJudgeUser>>(await response.Content.ReadAsStringAsync());
                 var problemIdsString = string.Join(',', user.data.passedProblems);
                 var response2 = await client.GetAsync("/api/problem/title?problemIds=" + WebUtility.UrlEncode(problemIdsString));
-                var result = JsonConvert.DeserializeObject<ApiResult<Dictionary<string, string>>>(await response2.Content.ReadAsStringAsync());
+                var text = await response2.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<ApiResult<Dictionary<string, dynamic>>>(text);
                 return result.data;
             }
         }
