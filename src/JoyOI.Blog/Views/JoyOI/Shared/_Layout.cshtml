@@ -68,7 +68,7 @@
 
     @Html.Partial("_Footer")
 
-    @User.IsSignedIn()
+    @if (User.IsSignedIn())
     {
         <a href="javascript:toggleChatBox();" id="back-to-top"><i class="fa fa-comment-o"></i></a>
     }

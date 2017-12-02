@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using JoyOI.Blog.Models;
-using System.Collections.Generic;
+using JoyOI.UserCenter.SDK;
 
 namespace JoyOI.Blog.Controllers
 {
@@ -101,6 +102,15 @@ namespace JoyOI.Blog.Controllers
                 .ToList(); 
             }
             ViewBag.Catalogs = catalogs;
+
+
+            if (User.Current != null)
+            {
+                ViewBag.ChatUrl = UC.GenerateChatWindowUrl(User.Current.OpenId);
+            }
         }
+
+        [Inject]
+        public JoyOIUC UC { get; set; }
     }
 }
