@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
@@ -27,5 +28,7 @@ namespace JoyOI.Blog.Models
 
         [MaxLength(256)]
         public string AvatarUrl { get; set; }
+
+        public virtual ICollection<DomainBinding> Domains { get; set; } = new List<DomainBinding>();
     }
 }

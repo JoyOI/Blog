@@ -21,6 +21,7 @@ namespace JoyOI.Blog.Controllers
 
             var query = DB.Posts
                 .Include(x => x.User)
+                .ThenInclude(x => x.Domains)
                 .Include(x => x.Tags)
                 .Where(x => x.ProblemId == id)
                 .Where(x => x.Content.Length > 0);
@@ -32,12 +33,13 @@ namespace JoyOI.Blog.Controllers
                 .Select(x => new
                 {
                     id = x.Id,
+                    url = x.Url,
                     title = x.Title,
                     time = x.Time,
                     userId = x.User.OpenId,
                     username = x.User.UserName,
                     avatarUrl = x.User.AvatarUrl,
-                    url = Request.Scheme + "://" + Request.Host + "/post/" + x.Id,
+                    domain = x.User.Domains.Last().Domain.TrimEnd('/'),
                     tags = x.Tags.Select(y => y.Tag)
                 })
                 .Skip((page.Value - 1) * 20)
@@ -73,6 +75,13 @@ namespace JoyOI.Blog.Controllers
             if (!page.HasValue)
                 page = 1;
 
+            var user = DB.Users
+                .Include(x => x.Domains)
+                .Where(x => x.UserName == id)
+                .SingleOrDefault();
+
+            var domain = user.Domains.Last().Domain.TrimEnd('/');
+
             var query = DB.Posts
                 .Include(x => x.User)
                 .Include(x => x.Tags)
@@ -87,10 +96,12 @@ namespace JoyOI.Blog.Controllers
                 .Select(x => new
                 {
                     id = x.Id,
+                    url = x.Url,
                     title = x.Title,
                     time = x.Time,
                     problemId = x.ProblemId,
-                    problemTitle = x.ProblemTitle
+                    problemTitle = x.ProblemTitle,
+                    domain = domain
                 })
                 .Skip((page.Value - 1) * 20)
                 .Take(20)
