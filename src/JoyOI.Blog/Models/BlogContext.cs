@@ -42,7 +42,7 @@ namespace JoyOI.Blog.Models
             {
                 e.HasIndex(x => x.IsPage);
                 e.HasIndex(x => x.Time);
-                e.HasIndex(x => x.Url).IsUnique();
+                e.HasIndex(x => x.Url);
             });
 
             builder.Entity<PostTag>(e =>

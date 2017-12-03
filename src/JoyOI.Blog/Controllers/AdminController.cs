@@ -155,6 +155,16 @@ namespace JoyOI.Blog.Controllers
                 });
             }
 
+            if (await DB.Posts.AnyAsync(x => x.Url == newId && x.UserId == User.Current.Id))
+            {
+                return Prompt(x =>
+                {
+                    x.Title = SR["URL is invalid"];
+                    x.Details = SR["The URL is already exist, please pick another one."];
+                    x.StatusCode = 400;
+                });
+            }
+
             var post = DB.Posts
                 .Include(x => x.Tags)
                 .Where(x => x.UserId == SiteOwnerId)
