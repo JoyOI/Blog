@@ -91,7 +91,7 @@ namespace JoyOI.Blog.Controllers
                         Email = profileResult.data.email,
                         PhoneNumber = profileResult.data.phone,
                         SiteName = profileResult.data.nickname,
-                        Template = "Default",
+                        Template = "JoyOI",
                         AccessToken = authorizeResult.data.access_token,
                         ExpireTime = authorizeResult.data.expire_time,
                         OpenId = authorizeResult.data.open_id,
