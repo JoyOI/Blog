@@ -16232,3 +16232,11 @@ td i {
     .post-catalog-item:hover {
         background-color: #b18686;
     }
+
+.editor-toolbar.fullscreen {
+    top: 50px !important;
+}
+
+.CodeMirror-fullscreen {
+    top: 100px !important;
+}
